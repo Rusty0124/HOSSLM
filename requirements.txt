@@ -1,0 +1,6 @@
+torch
+pandas
+wikipedia-api
+requests
+python-dotenv
+sentence-transformers

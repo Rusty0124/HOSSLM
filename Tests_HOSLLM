@@ -1,0 +1,35 @@
+import unittest
+from app import HOSLLM
+
+class TestHOSLLM(unittest.TestCase):
+
+    def setUp(self):
+        self.hosllm = HOSLLM()
+        self.hosllm.history_context = [
+            ["World War I", "1914", "A global war originating in Europe."],
+            ["World War II", "1939", "A global war involving most of the world's nations."],
+            ["Vietnam War", "1955", "A conflict in Vietnam, Laos, and Cambodia."],
+        ]
+
+    def test_extract_year(self):
+        self.assertEqual(self.hosllm.extract_year("Tell me about 1914"), 1914)
+        self.assertEqual(self.hosllm.extract_year("What happened in 1939?"), 1939)
+        self.assertIsNone(self.hosllm.extract_year("Tell me about the 20th century"))
+
+    def test_find_most_important_event(self):
+        self.assertEqual(self.hosllm.find_most_important_event(1914)[0], "World War I")
+        self.assertEqual(self.hosllm.find_most_important_event(1939)[0], "World War II")
+        self.assertIsNone(self.hosllm.find_most_important_event(2000))
+
+    def test_find_by_name(self):
+        self.assertEqual(self.hosllm.find_by_name("World War I"), "World War I (1914): A global war originating in Europe.")
+        self.assertIsNone(self.hosllm.find_by_name("Cold War"))
+
+    def test_find_by_date_range(self):
+        result = self.hosllm.find_by_date_range(1900, 1950)
+        self.assertIn("World War I (1914): A global war originating in Europe.", result)
+        self.assertIn("World War II (1939): A global war involving most of the world's nations.", result)
+        self.assertNotIn("Vietnam War (1955): A conflict in Vietnam, Laos, and Cambodia.", result)
+
+if __name__ == '__main__':
+    unittest.main()
